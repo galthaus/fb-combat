@@ -44,11 +44,12 @@ class ComSim
             s2people = [[:base]]
         end
 
+        puts "Running #{s1people.size * s2people.size} Combos: #{s1people.size} X #{s2people.size}"
         s1people.each do |s1v|
             @person1.apply_variants(s1v)
             s2people.each do |s2v|
                 @person2.apply_variants(s2v)
-                puts "Comparing #{s1v} to #{s2v}"
+                puts "Comparing #{s1v.inspect} to #{s2v.inspect}"
                 run_fight(@person1, @person2)
             end
         end
