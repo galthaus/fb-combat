@@ -11,12 +11,18 @@ $iter_count = ARGV[0].to_i rescue 1000
 p1 = Person.new("Alex")
 p2 = Person.new("Fred")
 
-compare = { 
-    :attack_location => Global::ARMOR_SLOT_ROLLS.keys, 
-    :hit_points => (12..12),
-    :expertise => (10..25),
-    :weapon => ["longsword", "rapier"],
-    :style => [ :french ]
+# Big Run
+#compare = { 
+#    :attack_location => Global::ARMOR_SLOT_ROLLS.keys, 
+#    :hit_points => (12..12),
+#    :expertise => (10..25),
+#    :weapon => ["longsword", "rapier"],
+#    :style => [ :french ]
+#}
+#
+
+compare = {
+
 }
 
 cs = ComSim.new(p1, p2, compare, compare)

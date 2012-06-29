@@ -15,7 +15,7 @@ class ComSim
     end
 
     def run_combos
-        if @s1variants
+        if @s1variants and @s1variants.size > 0
             vlist = []
             @s1variants.each do |k,v|
                  new_list = []
@@ -29,7 +29,7 @@ class ComSim
         else
             s1people = [[:base]]
         end
-        if @s2variants
+        if @s2variants and @s2variants.size > 0
             vlist = []
             @s2variants.each do |k,v|
                  new_list = []
