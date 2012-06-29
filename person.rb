@@ -243,7 +243,7 @@ class Person
     end
 
     def weapon_type
-        Global::WEAPON_TYPE[@weapon] rescue :brawling
+        Global::WEAPON_TYPE[@weapon] || :brawling rescue :brawling
     end
 
     def roll_temp_random

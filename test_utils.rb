@@ -193,5 +193,17 @@ class TestUtils < Test::Unit::TestCase
         assert_equal Utils.weapon_defense_penalty("unknown"), 0
     end
 
+    def test_offhand_weapon_parry_bonus
+        assert_equal Utils.offhand_weapon_parry_bonus(:horse, :pig), 0
+        assert_equal Utils.offhand_weapon_parry_bonus(:french, :pig), 0
+        assert_equal Utils.offhand_weapon_parry_bonus(:french, :main_gauche), 3
+    end
+
+    def test_style_attack_bonus
+        assert_equal Utils.style_attack_bonus(:horse, :pig), 0
+        assert_equal Utils.style_attack_bonus(:french, :pig), 0
+        assert_equal Utils.style_attack_bonus(:italian, :thrust), 1
+    end
+
 end
 

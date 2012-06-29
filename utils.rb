@@ -42,11 +42,6 @@ class Utils
                 success = true
                 action = "advantaged auto-success "
             end
-            if success and r1 == 20 and !advantaged
-                success = false
-                crit = false
-                action = "auto-fail "
-            end
             if success and r1 == 20 and r2 == 20 and advantaged
                 success = false
                 crit = false

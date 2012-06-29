@@ -331,6 +331,26 @@ class TestPerson < Test::Unit::TestCase
         # This could be more, but not now.  It is enough for simple tests.
     end
 
+    def test_weapon_type
+        p1 = Person.new("James", {:weapon => "fred"})
+        assert_equal :brawling, p1.weapon_type
+        p1.weapon = "rapier"
+        assert_equal :fencing, p1.weapon_type
+        p1.weapon = nil
+        assert_equal :brawling, p1.weapon_type
+    end
+
+    def test_roll_temp_random
+        p1 = Person.new("James", {:weapon => "fred"})
+        $mock_die = [ 5 ]
+        assert_equal 5, p1.roll_temp_random
+        $mock_die = nil
+    end
+
+    def test_attack_location
+        p1 = Person.new("James", {:attack_location => :tail})
+        assert_equal :tail, p1.get_location(p1)
+    end
 
 end
 
