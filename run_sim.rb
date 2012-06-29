@@ -22,10 +22,14 @@ p2 = Person.new("Fred")
 #
 
 compare = {
-
+    :expertise => [ 24 ],
+    :style => [ :french ]
+}
+compare1 = {
+    :style => [ :italian ]
 }
 
-cs = ComSim.new(p1, p2, compare, compare)
+cs = ComSim.new(p1, p2, compare, compare1)
 cs.run_combos
 
 t2 = Time.now

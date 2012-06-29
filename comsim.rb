@@ -26,6 +26,7 @@ class ComSim
             end
             s1people = vlist.pop
             s1people = s1people.product(*vlist) unless vlist.empty?
+            s1people = [s1people] if vlist.empty?
         else
             s1people = [[:base]]
         end
@@ -40,6 +41,7 @@ class ComSim
             end
             s2people = vlist.pop
             s2people = s2people.product(*vlist) unless vlist.empty?
+            s2people = [s2people] if vlist.empty?
         else
             s2people = [[:base]]
         end

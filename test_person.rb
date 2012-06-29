@@ -24,6 +24,18 @@ class TestPerson < Test::Unit::TestCase
         File.delete("person_test.yml")
     end
 
+    def test_apply_variants
+        p = Person.new
+        p.apply_variants([{ :expertise => 25 }])
+        assert_equal 25, p.expertise
+        p.apply_variants([{ :expertise => 22 }, {:style => :fred}])
+        assert_equal 22, p.expertise
+        assert_equal :fred, p.style
+        p.apply_variants([:base])
+        assert_equal 22, p.expertise
+        assert_equal :fred, p.style
+    end
+
     def test_damage
         tdamage = {
             :head => Global::DAMAGE_DEFAULT,

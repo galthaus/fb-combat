@@ -60,8 +60,11 @@ class Person
     end
 
     def apply_variants(vars)
-        vars.each do |k,v|
-            eval("@#{k} = v")
+        vars.each do |a|
+            return if a == :base
+            a.each do |k,v|
+              eval("@#{k} = v")
+            end
         end
     end
 

@@ -26,11 +26,12 @@ class Fight
     def sort_combatants(dudes)
         dudes.each { |x| x.roll_temp_random }
         dudes.sort! { |x,y|
-           val = x.dexterity <=> y.dexterity 
-           return val unless val == 0
-           val = x.expertise <=> y.expertise 
-           return val unless val == 0
-           x.temp_random <=> y.temp_random
+           val = x.temp_random <=> y.temp_random
+           tval = x.expertise <=> y.expertise 
+           val = tval unless tval == 0
+           tval = x.dexterity <=> y.dexterity 
+           val = tval unless tval == 0
+           val
         }
     end
 
@@ -64,15 +65,16 @@ class Fight
 
             val, dcrit, action_mod = Utils.skill_test(dc, true, advantage == :defender)
             hit = !val
-            puts "  #{defender.name} #{action_mod}#{action} #{attacker.name}" if $print_flow
+            puts "  #{defender.name} (#{dc}) #{action_mod}#{action} #{attacker.name} (#{hc})" if $print_flow
         else
-            puts "  #{attacker.name} misses #{defender.name}" if $print_flow
+            puts "  #{attacker.name} (#{hc}) misses #{defender.name}" if $print_flow
         end
 
         # Do damage
         if hit
             action = "damages"
             dam = 2
+            dam += Global::SCRATCH_DEFAULT if attacker.weapon_type == :fencing or attacker.weapon_type == :heavy
             action = "crits" if crit
             dam += Utils.roll("1d4") if crit
             location = attacker.get_location(defender)
