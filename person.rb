@@ -13,6 +13,8 @@ class Person
     attr_accessor :dexterity
     attr_accessor :expertise
     attr_accessor :weapon
+    attr_accessor :offhand_weapon
+    attr_accessor :style
     attr_accessor :high_quality_weapon
     attr_accessor :actions
     attr_accessor :attack_location
@@ -48,8 +50,10 @@ class Person
         @expertise = options[:expertise] || Global::EXPERTISE_DEFAULT
         @endurance = options[:endurance] || Global::ENDURANCE_DEFAULT
         @dexterity = options[:dexterity] || Global::DEXTERITY_DEFAULT
+        @style = options[:style] || Global::COMBAT_STYLE_DEFAULT
         @attack_location = options[:attack_location] || Global::ATTACK_LOCATION_DEFAULT
         @weapon = options[:weapon] || Global::WEAPON_DEFAULT
+        @offhand_weapon = options[:offhand_weapon] || Global::OFFHAND_WEAPON_DEFAULT
         @high_quality_weapon = options[:high_quality_weapon]
         @high_quality_weapon = Global::HIGH_WEAPON_QUALITY_DEFAULT if @high_quality_weapon.nil?
         reset
@@ -116,7 +120,7 @@ class Person
         value -= opponent.expertise
         value += Utils.weapon_quality_bonus(@high_quality_weapon)
         value += Utils.weapon_attack_bonus(@weapon)
-        # GREG: Remember style/choice bonus
+        value += Utils.style_attack_bonus(@style, @attack_type)
         value
     end
 
@@ -127,7 +131,7 @@ class Person
         value += Utils.weapon_quality_bonus(@high_quality_weapon)
         value += Utils.weapon_defense_bonus(@weapon)
         value -= Utils.weapon_defense_penalty(opponent.weapon)
-        # GREG: Remember style/choice bonus
+        value += Utils.offhand_weapon_parry_bonus(@style, @offhand_weapon) unless @lose_offhand_bonus
         value
     end
 

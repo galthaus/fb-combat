@@ -1,10 +1,12 @@
 
 class Global
     DAMAGE_DEFAULT = 0
-    HIT_POINTS_DEFAULT = 14
+
+    ENDURANCE_DEFAULT = 10
+    DEXTERITY_DEFAULT = 13
+    HIT_POINTS_DEFAULT = 12
+
     EXPERTISE_DEFAULT = 14
-    ENDURANCE_DEFAULT = 12
-    DEXTERITY_DEFAULT = 12
 
     ATTACK_BASE_DEFAULT = 8
     PARRY_BASE_DEFAULT = 7
@@ -26,8 +28,12 @@ class Global
 
     SCRATCH_DEFAULT = 1
 
-    COMBAT_STYLE_DEFAULT = "French"
-    COMBAT_STYLE_LIST = [ "French", "Italian", "Spanish" ]
+    COMBAT_STYLE_DEFAULT = :french
+    COMBAT_STYLE_LIST = [ :french, :italian, :spanish, :none ]
+    COMBAT_STYLE_ATTACK_BONUS = {
+        :italian => { :thrust => 1, :lunge => 1 },
+        :spanish => { :slash => 1 }
+    }
 
     HIGH_WEAPON_QUALITY_DEFAULT = true
     HIGH_QUALITY_BONUS = 1
@@ -41,6 +47,13 @@ class Global
       "rapier" => :fencing,
       "2h sword" => :heavy,
       "club" => :brawling
+    }
+
+    OFFHAND_WEAPON_DEFAULT = :main_gauche
+    OFFHAND_WEAPON_LIST = [ :main_gauche, :good_stuff, :OK_stuff ]
+    OFFHAND_PARRY_BONUS = {
+        :french => { :main_gauche => 3, :good_stuff => 2, :OK_stuff => 1 },
+        :italian => { :good_stuff => 1 }
     }
 
     WEAPON_DEFAULT = "longsword"

@@ -166,12 +166,12 @@ class TestPerson < Test::Unit::TestCase
     end
 
     def validate_damage(p, slot, dam, res, died, unc, stunned, offhand)
-        assert_equal p.damage[slot], dam
-        assert_equal p.resigned, res
-        assert_equal p.died, died
-        assert_equal p.knocked_out, unc
-        assert_equal p.stunned, stunned
-        assert_equal p.lose_offhand_bonus, offhand
+        assert_equal p.damage[slot], dam, "Damage Slot"
+        assert_equal p.resigned, res, "Resigned"
+        assert_equal p.died, died, "Died"
+        assert_equal p.knocked_out, unc, "knocked out"
+        assert_equal p.stunned, stunned, "Stunned"
+        assert_equal p.lose_offhand_bonus, offhand, "Offhand"
         active = p.active?
         if died or unc or res
             assert_equal p.active?, false 
@@ -216,15 +216,11 @@ class TestPerson < Test::Unit::TestCase
 
         p = Person.new
         p.take_damage(:head, 8)
-        validate_damage(p, :head, 6, false, false, false, true, false)
+        validate_damage(p, :head, 6, false, false, true, true, false)
 
         p = Person.new
         p.take_damage(:head, 9)
-        validate_damage(p, :head, 7, false, false, true, true, false)
-
-        p = Person.new
-        p.take_damage(:head, 10)
-        validate_damage(p, :head, 8, false, true, false, true, false)
+        validate_damage(p, :head, 7, false, true, false, true, false)
 
         p = Person.new
         p.take_damage(:head, 1)
@@ -238,11 +234,9 @@ class TestPerson < Test::Unit::TestCase
         p.take_damage(:head, 1)
         validate_damage(p, :head, 5, false, false, false, false, false)
         p.take_damage(:head, 1)
-        validate_damage(p, :head, 6, false, false, false, false, false)
+        validate_damage(p, :head, 6, false, false, true, false, false)
         p.take_damage(:head, 1)
-        validate_damage(p, :head, 7, false, false, true, false, false)
-        p.take_damage(:head, 1)
-        validate_damage(p, :head, 8, false, true, false, false, false)
+        validate_damage(p, :head, 7, false, true, false, false, false)
 
         # Right Arm, Right Leg, and Left Leg work the same.
         [:left_leg, :right_leg, :right_arm].each do |slot|
@@ -258,9 +252,7 @@ class TestPerson < Test::Unit::TestCase
             p.take_damage(slot, 1)
             validate_damage(p, slot, 5, false, false, false, false, false)
             p.take_damage(slot, 1)
-            validate_damage(p, slot, 6, false, false, false, false, false)
-            p.take_damage(slot, 1)
-            validate_damage(p, slot, 7, true, false, false, false, false)
+            validate_damage(p, slot, 6, true, false, false, false, false)
 
             $end_check_override = true
             $end_check_override_value = false
@@ -289,9 +281,7 @@ class TestPerson < Test::Unit::TestCase
             p.take_damage(slot, 1)
             validate_damage(p, slot, 5, false, false, false, false, false)
             p.take_damage(slot, 1)
-            validate_damage(p, slot, 6, false, false, false, false, false)
-            p.take_damage(slot, 1)
-            validate_damage(p, slot, 7, false, false, true, false, false)
+            validate_damage(p, slot, 6, false, false, true, false, false)
 
             p = Person.new
             p.take_damage(slot, 6)
@@ -312,9 +302,7 @@ class TestPerson < Test::Unit::TestCase
         p.take_damage(slot, 1)
         validate_damage(p, slot, 5, false, false, false, false, false)
         p.take_damage(slot, 1)
-        validate_damage(p, slot, 6, false, false, false, false, false)
-        p.take_damage(slot, 1)
-        validate_damage(p, slot, 7, false, false, false, false, true)
+        validate_damage(p, slot, 6, false, false, false, false, true)
 
         $end_check_override = true
         $end_check_override_value = false
@@ -334,8 +322,8 @@ class TestPerson < Test::Unit::TestCase
         p2 = Person.new("James", {:expertise => 10})
         assert_equal 10, p1.hit_chance(p2)
         assert_equal 10, p2.hit_chance(p1)
-        assert_equal 8, p1.parry_chance(p2)
-        assert_equal 8, p2.parry_chance(p1)
+        assert_equal 11, p1.parry_chance(p2)
+        assert_equal 11, p2.parry_chance(p1)
         assert_equal 6, p1.evade_chance(p2)
         assert_equal 6, p2.evade_chance(p1)
         assert_equal 11, p1.counter_chance(p2)

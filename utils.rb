@@ -120,6 +120,22 @@ class Utils
         end
     end
 
+    def self.offhand_weapon_parry_bonus(style, weap)
+        style = Global::OFFHAND_PARRY_BONUS[style]
+        return 0 unless style
+        bonus = style[weap]
+        return 0 unless bonus
+        bonus
+    end
+
+    def self.style_attack_bonus(style, attack_type)
+        style = Global::COMBAT_STYLE_ATTACK_BONUS[style]
+        return 0 unless style
+        bonus = style[attack_type]
+        return 0 unless bonus
+        bonus
+    end
+
 end
 
 
