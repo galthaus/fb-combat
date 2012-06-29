@@ -22,6 +22,10 @@ class Utils
         crit = true if r1 <= target / 3
         action = "" if success
         action = "crit " if crit
+        if success and r1 == 20 and autotest
+            success = crit = false 
+            action = "auto-fail "
+        end
         if advantaged and !crit
             r2 = Utils.roll(die)
             action = "advantaged " if !success and r2 <= target
@@ -68,26 +72,34 @@ class Utils
         r1 = Utils.roll
         r2 = Utils.roll
 
+        targetlo = -1
+        targethi = -1
+        Global::ARMOR_SLOT_ROLLS.each do |k,v|
+            next if k != location
+            targetlo = v[:lo]
+            targethi = v[:hi]
+            break
+        end
+
         bestdiff = 100000
         bestloc = :tail
         Global::ARMOR_SLOT_ROLLS.each do |k,v|
-            if v[:lo] <= r1 and v[:hi] >= r1
+            if v[:lo] <= r1 and r1 <= v[:hi]
                 return location if location == k
-                diff = Utils.min(Utils.abs(v[:lo] - r1), Utils.abs(v[:hi] - r1))
+                diff = Utils.min(Utils.abs(targetlo - r1), Utils.abs(targethi - r1))
                 if diff < bestdiff
                     bestdiff = diff
                     bestloc = k
                 end
             end
-            if v[:lo] <= r2 and v[:hi] >= r2
+            if v[:lo] <= r2 and r2 <= v[:hi]
                 return location if location == k
-                diff = Utils.min(Utils.abs(v[:lo] - r2), Utils.abs(v[:hi] - r2))
+                diff = Utils.min(Utils.abs(targetlo - r2), Utils.abs(targethi - r2))
                 if diff < bestdiff
                     bestdiff = diff
                     bestloc = k
                 end
             end
-
         end
         bestloc
     end
