@@ -7,45 +7,82 @@ require 'global'
 
 class ComSim
 
-    def initialize(side1, side2, variants)
+    def initialize(p1, p2, s1v = nil, s2v = nil)
+        @person1 = p1
+        @person2 = p2
+        @s1variants = s1v
+        @s2variants = s2v
     end
 
-p1 = Person.new("Alex")
-p2 = Person.new("Fred")
-f = Fight.new([p1], [p2])
+    def run_combos
+        if @s1variants
+            vlist = []
+            @s1variants.each do |k,v|
+                 new_list = []
+                 v.each do |x|
+                      new_list << { k => x }
+                 end
+                 vlist << new_list
+            end
+            s1people = vlist.pop
+            s1people = s1people.product(*vlist) unless vlist.empty?
+        else
+            s1people = [[:base]]
+        end
+        if @s2variants
+            vlist = []
+            @s2variants.each do |k,v|
+                 new_list = []
+                 v.each do |x|
+                      new_list << { k => x }
+                 end
+                 vlist << new_list
+            end
+            s2people = vlist.pop
+            s2people = s2people.product(*vlist) unless vlist.empty?
+        else
+            s2people = [[:base]]
+        end
 
-p p1
-p p2
+        s1people.each do |s1v|
+            @person1.apply_variants(s1v)
+            s2people.each do |s2v|
+                @person2.apply_variants(s2v)
+                puts "Comparing #{s1v} to #{s2v}"
+                run_fight(@person1, @person2)
+            end
+        end
+    end
 
-round_small = 100000
-round_long = 0
-round_total = 0
-death_count = knock_out_count = resigned_count = 0
-p1win = p2win = 0
-count.times do
-    p1.reset
-    p2.reset
-    r = f.run
-    round_long = r if r > round_long
-    round_small = r if r < round_small
-    round_total += r
-    p1win += 1 if p1.active?
-    p2win += 1 if p2.active?
-    death_count += 1 if p1.died or p2.died
-    knock_out_count += 1 if p1.knocked_out or p2.knocked_out
-    resigned_count += 1 if p1.resigned or p2.resigned
-end
-puts "Alex wins #{p1win} / Fred wins #{p2win} total: #{count}"
-puts "Round Data: (#{round_long}/#{round_total.to_f/count.to_f}/#{round_small})"
-puts "Ending Data: Died: #{death_count} Resigned: #{resigned_count}  KnockOut: #{knock_out_count}"
+    def run_fight(p1, p2)
+        f = Fight.new([p1], [p2])
 
-t2 = Time.now
-puts "In #{t2-t1} seconds"
+        p p1 if $verbose
+        p p2 if $verbose
 
-end
-
-
-
+        round_small = 100000
+        round_long = 0
+        round_total = 0
+        death_count = knock_out_count = resigned_count = 0
+        p1win = p2win = 0
+        count = $iter_count
+        count.times do
+            p1.reset
+            p2.reset
+            r = f.run
+            round_long = r if r > round_long
+            round_small = r if r < round_small
+            round_total += r
+            p1win += 1 if p1.active?
+            p2win += 1 if p2.active?
+            death_count += 1 if p1.died or p2.died
+            knock_out_count += 1 if p1.knocked_out or p2.knocked_out
+            resigned_count += 1 if p1.resigned or p2.resigned
+        end
+        puts "W: (#{p1win}/#{p2win}/#{count}) " +
+             "R: (#{round_long}/#{round_total.to_f/count.to_f}/#{round_small}) " +
+             "E: (D: #{death_count}/R: #{resigned_count}/K: #{knock_out_count})"
+    end
 
 end
 

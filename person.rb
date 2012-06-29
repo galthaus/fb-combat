@@ -59,6 +59,12 @@ class Person
         reset
     end
 
+    def apply_variants(vars)
+        vars.each do |k,v|
+            eval("@#{k} = v")
+        end
+    end
+
     def total_damage
         @damage.values.inject(0, :+)
     end

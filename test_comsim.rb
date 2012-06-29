@@ -8,8 +8,10 @@ require 'global.rb'
 
 class TestComSim < Test::Unit::TestCase
 
-    def test_nothing
-        assert true
+    def test_basic_comsim_fight
+        $iter_count = 1
+        cs = ComSim.new(Person.new("Greg"), Person.new("John"))
+        cs.run_combos
     end
 
 end
