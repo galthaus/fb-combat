@@ -91,9 +91,10 @@ class Fight
     end
 
     def run
-        round = 1
+        round = 0
 
         while Fight.side_active?(@sideA) and Fight.side_active?(@sideB)
+            round += 1
             puts "Start Round #{round}" if $verbose
 
             # Get actions
@@ -119,7 +120,6 @@ class Fight
             end
 
             puts "End Round #{round}" if $verbose
-            round += 1
         end
 
         round
