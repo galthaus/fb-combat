@@ -84,7 +84,7 @@ class ComSim
         end
         puts "W: (#{p1win}/#{p2win}/#{count}) " +
              "R: (#{round_long}/#{round_total.to_f/count.to_f}/#{round_small}) " +
-             "E: (D: #{death_count}/R: #{resigned_count}/K: #{knock_out_count})"
+             "E: (D: #{death_count}/R: #{resigned_count}/U: #{knock_out_count})"
     end
 
 end

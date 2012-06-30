@@ -12,22 +12,23 @@ p1 = Person.new("Alex")
 p2 = Person.new("Fred")
 
 # Big Run
-#compare = { 
+compare = { 
 #    :attack_location => Global::ARMOR_SLOT_ROLLS.keys, 
-#    :hit_points => (12..12),
-#    :expertise => (10..25),
-#    :weapon => ["longsword", "rapier"],
-#    :style => [ :french ]
-#}
-#
-
-compare = {
-    :expertise => [ 24 ],
+    :attack_location => [ :chest ],
+    :hit_points => (12..12),
+    :expertise => [10,12,14,16,18,20,22,24],
+    :weapon => ["longsword", "rapier"],
     :style => [ :french ]
 }
-compare1 = {
-    :style => [ :italian ]
-}
+compare1 = compare
+
+#compare = {
+#    :expertise => [ 24 ],
+#    :style => [ :french ]
+#}
+#compare1 = {
+#    :style => [ :italian ]
+#}
 
 cs = ComSim.new(p1, p2, compare, compare1)
 cs.run_combos
