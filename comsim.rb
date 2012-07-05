@@ -10,11 +10,40 @@ class ComSim
     def initialize(p1, p2, s1v = nil, s2v = nil)
         @person1 = p1
         @person2 = p2
-        @s1variants = s1v
-        @s2variants = s2v
+
+        if s1v
+          @s1constants = s1v.select {|k,v| v.to_a.size == 1 }
+          @s1variants = s1v.select {|k,v| v.to_a.size != 1 }
+        else
+          @s1constants = nil
+          @s1variants = nil
+        end
+
+        if s2v
+          @s2constants = s2v.select {|k,v| v.to_a.size == 1 }
+          @s2variants = s2v.select {|k,v| v.to_a.size != 1 }
+        else
+          @s2constants = nil
+          @s2variants = nil
+        end
     end
 
     def run_combos
+        if @s1constants and @s1constants.size > 0
+            vlist = []
+            @s1constants.each do |k,v|
+                 new_list = []
+                 v.each do |x|
+                      new_list << { k => x }
+                 end
+                 vlist << new_list
+            end
+            s1const = vlist.pop
+            s1const = s1const.product(*vlist) unless vlist.empty?
+            s1const = [s1const] if vlist.empty?
+        else
+            s1const = [[:base]]
+        end
         if @s1variants and @s1variants.size > 0
             vlist = []
             @s1variants.each do |k,v|
@@ -29,6 +58,21 @@ class ComSim
             s1people = [s1people] if vlist.empty?
         else
             s1people = [[:base]]
+        end
+        if @s2constants and @s2constants.size > 0
+            vlist = []
+            @s2constants.each do |k,v|
+                 new_list = []
+                 v.each do |x|
+                      new_list << { k => x }
+                 end
+                 vlist << new_list
+            end
+            s2const = vlist.pop
+            s2const = s2const.product(*vlist) unless vlist.empty?
+            s2const = [s2const] if vlist.empty?
+        else
+            s2const = [[:base]]
         end
         if @s2variants and @s2variants.size > 0
             vlist = []
@@ -46,13 +90,83 @@ class ComSim
             s2people = [[:base]]
         end
 
-        puts "Running #{s1people.size * s2people.size} Combos: #{s1people.size} X #{s2people.size}"
+        puts "Running #{s1people.size * s2people.size} Combos: #{s1people.size} X #{s2people.size}" if @debug
+        if s1const == [[:base]]
+            puts "Player1,base"
+        else
+           s1const.first.each do |a|
+               a.each do |k,v|
+                   puts "Player1 #{k},#{v}"
+               end
+           end
+        end
+        if s2const == [[:base]]
+            puts "Player2,base"
+        else
+           s2const.first.each do |a|
+               a.each do |k,v|
+                   puts "Player2 #{k},#{v}"
+               end
+           end
+        end
+        @person1.apply_variants(s1const)
+        @person2.apply_variants(s2const)
+        s1keys = s1people.first
+        if s1keys == [:base]
+            s1keys = nil
+        else
+            s1keys = s1keys.map {|x| x.keys }.flatten
+            s1keys.sort! { |x,y| x.to_s <=> y.to_s}
+        end
+        s2keys = s2people.first
+        if s2keys == [:base]
+            s2keys = nil
+        else
+            s2keys = s2keys.map {|x| x.keys }.flatten
+            s2keys.sort! { |x,y| x.to_s <=> y.to_s}
+        end
+        header = ""
+        if s1keys
+            header += "Player1 " + s1keys.join(",Player1 ")
+        end
+        if s2keys
+            header += "," if header != ""
+            header += "Player2 " + s2keys.join(",Player2 ")
+        end
+        header += ",W1,W2,Wcount,LR,AR,SR,D,U,R"
+        puts header
         s1people.each do |s1v|
+            s1line = ""
+            if s1keys
+                s1keys.each do |key|
+                    s1v.each do |a|
+                        a.each do |k,v|
+                            s1line += "," if s1line != ""
+                            s1line += "#{v}" if k == key
+                        end
+                    end
+                end
+            end
             @person1.apply_variants(s1v)
             s2people.each do |s2v|
+                s2line = ""
+                if s2keys
+                    s2keys.each do |key|
+                        s2v.each do |a|
+                            a.each do |k,v|
+                                s2line += "," if s2line != ""
+                                s2line += "#{v}" if k == key
+                            end
+                        end
+                    end
+                end
                 @person2.apply_variants(s2v)
-                puts "Comparing #{s1v.inspect} to #{s2v.inspect}"
-                run_fight(@person1, @person2)
+                data = run_fight(@person1, @person2)
+                answer = ""
+                answer += s1line if s1line != ""
+                answer += s2line if s2line != ""
+                answer += data.join(",")
+                puts answer
             end
         end
     end
@@ -69,6 +183,7 @@ class ComSim
         death_count = knock_out_count = resigned_count = 0
         p1win = p2win = 0
         count = $iter_count
+        histo = {}
         count.times do
             p1.reset
             p2.reset
@@ -81,10 +196,10 @@ class ComSim
             death_count += 1 if p1.died or p2.died
             knock_out_count += 1 if p1.knocked_out or p2.knocked_out
             resigned_count += 1 if p1.resigned or p2.resigned
+            histo[r] = 0 unless histo[r]
+            histo[r] += 1 
         end
-        puts "W: (#{p1win}/#{p2win}/#{count}) " +
-             "R: (#{round_long}/#{round_total.to_f/count.to_f}/#{round_small}) " +
-             "E: (D: #{death_count}/R: #{resigned_count}/U: #{knock_out_count})"
+        [p1win, p2win, count, round_long, round_total.to_f/count.to_f, round_small, death_count, knock_out_count, resigned_count, histo.sort {|x,y| x[0] <=> y[0] }.map{|x| x[1]} ]
     end
 
 end

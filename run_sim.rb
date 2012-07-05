@@ -37,7 +37,7 @@ cs = ComSim.new(p1, p2, compare, compare1)
 cs.run_combos
 
 t2 = Time.now
-puts "In #{t2-t1} seconds"
+puts "In #{t2-t1} seconds" if @debug
 
 end
 
