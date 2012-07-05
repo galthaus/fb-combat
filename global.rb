@@ -43,7 +43,7 @@ class Global
     COMBAT_STYLE_DEFAULT = :french
     COMBAT_STYLE_LIST = [ :french, :italian, :spanish, :none ]
     COMBAT_STYLE_ATTACK_BONUS = {
-        :italian => { :thrust => 1, :lunge => 1 },
+        :italian => { :thrust => 2, :lunge => 2 },
         :spanish => { :slash => 1 }
     }
 
@@ -57,6 +57,7 @@ class Global
       "pistol" => :ranged,
       "longsword" => :fencing,
       "rapier" => :fencing,
+      "sabre" => :fencing,
       "2h sword" => :heavy,
       "club" => :brawling
     }
@@ -73,16 +74,19 @@ class Global
     WEAPON_BONUS_ATTACK = {
         "unknown" => 0,
         "longsword" => 1,
+        "sabre" => 2,
         "rapier" => 2
     }
     WEAPON_BONUS_DEFENSE = {
         "unknown" => 0,
         "longsword" => 1,
+        "sabre" => 2,
         "rapier" => 2
     }
     WEAPON_PENALTY_DEFENSE = {
         "unknown" => 0,
         "longsword" => 1,
+        "sabre" => 2,
         "rapier" => 2
     }
 end
