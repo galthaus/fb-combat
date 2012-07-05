@@ -20,10 +20,29 @@ context = {
     :reaction_parry_penalty => 6
 }
 
+# NOTE: Actions lists are:
+# Attack type should be :slash, :parry for these:
+#   [ stun, parry ]
+#   [ stun, evade ]
+#   [ stun, attack ]
+#   [ stun, counter ]
+#   [ counter, parry ]
+#   [ counter, evade ]
+#   [ counter, attack ]
+#   [ parry, attack ]
+#   [ evade, attack ]
+# Attack type should be lunge for these:
+#   [ attack ] # Lunge case 
+# 
+
+
 # Big Run
 compare = { 
     :attack_location => [ :chest ], # Or build subsets :chest, :flank, :right_arm, :right_leg, :left_arm, :left_leg
-    :attack_type => [ :slash ], # Attack type: :slash, :lungh, :thrust
+    :default_actions => [ [:attack, :counter] ], # Default action (:counter, :parry, :attack, :evade)
+    :stun_action => [ :parry ], # Action to take when stunned
+    :default_attack_type => [ :thrust ], # Attack type: :slash, :lunge, :thrust
+    :counter_attack_type => [ :thrust ], # Attack type to use on counter: :slash, :thrust
     :endurance => (10..10), # Endurance 
     :dexterity => (13..13), # Dexterity
     :hit_points => (12..12), # (X..Y) means X to Y inclusive  (X...Y) means X to Y-1.

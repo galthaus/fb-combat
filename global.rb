@@ -40,6 +40,9 @@ class Global
         }
     }
     ATTACK_TYPE_DEFAULT = :slash
+    COUNTER_ATTACK_TYPE_DEFAULT = :slash
+    STUN_ACTION_DEFAULT = :parry
+    ACTIONS_DEFAULT = [:attack, :parry]
 
     COMBAT_STYLE_DEFAULT = :french
     COMBAT_STYLE_LIST = [ :french, :italian, :spanish, :none ]

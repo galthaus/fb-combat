@@ -356,6 +356,53 @@ class TestPerson < Test::Unit::TestCase
         assert_equal nil, p1.attack_type
         p1.get_actions
         assert_equal :tail, p1.attack_type
+        assert_equal false, p1.striking?
+        assert_equal false, p1.thrusting?
+        assert_equal false, p1.slashing?
+        assert_equal false, p1.lunging?
+
+        p1.attack_type = :slash
+        assert_equal false, p1.striking?
+        assert_equal false, p1.thrusting?
+        assert_equal true, p1.slashing?
+        assert_equal false, p1.lunging?
+
+        p1.attack_type = :lunge
+        assert_equal false, p1.striking?
+        assert_equal false, p1.thrusting?
+        assert_equal false, p1.slashing?
+        assert_equal true, p1.lunging?
+
+        p1.attack_type = :thrust
+        assert_equal false, p1.striking?
+        assert_equal true, p1.thrusting?
+        assert_equal false, p1.slashing?
+        assert_equal false, p1.lunging?
+
+        p1.attack_type = :heavy
+        assert_equal true, p1.striking?
+        assert_equal false, p1.thrusting?
+        assert_equal false, p1.slashing?
+        assert_equal false, p1.lunging?
+    end
+
+    def actions_test(actions, att, deff, par, eva, cou)
+        p1 = Person.new("James", {:attack_type => :slash, :actions => actions})
+        p1.get_actions([p1])
+        assert_equal att, p1.attacking?
+        assert_equal deff, p1.defending?
+        assert_equal par, p1.parrying?
+        assert_equal eva, p1.evading?
+        assert_equal cou, p1.countering?
+    end
+
+    def test_actions
+        actions_test(nil, true, true, true, false, false)
+        actions_test([:attack, :parry], true, true, true, false, false)
+        actions_test([:parry, :attack], true, true, true, false, false)
+        actions_test([:parry, :counter], false, true, true, false, true)
+        actions_test([:attack, :counter], true, false, false, false, true)
+        actions_test([:attack, :evade], true, true, false, true, false)
     end
 
     def test_guess_attack

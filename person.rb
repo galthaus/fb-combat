@@ -16,6 +16,7 @@ class Person
     attr_accessor :offhand_weapon
     attr_accessor :style
     attr_accessor :high_quality_weapon
+    attr_accessor :default_actions
     attr_accessor :actions
     attr_accessor :attack_location
     attr_accessor :attack_guess
@@ -27,7 +28,7 @@ class Person
     attr_reader :lose_offhand_bonus
     attr_reader :temp_random
     attr_reader :opponent
-    attr_reader :attack_type
+    attr_accessor :attack_type
     attr_accessor :side
 
     def initialize(n = "Fred", options = {})
@@ -59,7 +60,10 @@ class Person
         @high_quality_weapon = options[:high_quality_weapon]
         @high_quality_weapon = Global::HIGH_WEAPON_QUALITY_DEFAULT if @high_quality_weapon.nil?
         @attack_guess = options[:attack_guess] || Global::ATTACK_GUESS_DEFAULT 
+        @default_actions = options[:actions] || Global::ACTIONS_DEFAULT
+        @stun_action = options[:stun_action] || Global::STUN_ACTION_DEFAULT
         @default_attack_type = options[:attack_type] || Global::ATTACK_TYPE_DEFAULT 
+        @counter_attack_type = options[:counter_attack_type] || Global::COUNTER_ATTACK_TYPE_DEFAULT 
         reset
     end
 
@@ -149,22 +153,11 @@ class Person
     end
 
     def get_actions(opponents = nil)
-       # GREG: Define two actions - assume toe to toe - options are:
-       #   [ stun, parry ]
-       #   [ stun, evade ]
-       #   [ stun, attack ]
-       #   [ stun, counter ]
-       #   [ attack ] # Lunge case
-       #   [ counter, parry ]
-       #   [ counter, evade ]
-       #   [ counter, attack ]
-       #   [ parry, attack ]
-       #   [ evade, attack ]
        if @stunned
-           @actions = [ :stun, :parry ]
+           @actions = [ :stun, @stun_action ]
            @stunned = false
        else
-           @actions = [ :attack, :parry ]
+           @actions = @default_actions
        end
        @opponent = opponents.first rescue nil
        @attack_type = @default_attack_type
@@ -203,7 +196,7 @@ class Person
     end
 
     def lunging?
-      @attack_type == :thrust
+      @attack_type == :lunge
     end
 
     def active?
@@ -211,7 +204,7 @@ class Person
     end
 
     def counter_attack_type(opponent)
-        @default_attack_type
+        @counter_attack_type
     end
 
     def get_location(opponent)

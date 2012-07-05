@@ -115,8 +115,8 @@ class ComSim
                end
            end
         end
-        @person1.apply_variants(s1const)
-        @person2.apply_variants(s2const)
+        @person1.apply_variants(s1const.first)
+        @person2.apply_variants(s2const.first)
         s1keys = s1people.first
         if s1keys == [:base]
             s1keys = nil
@@ -147,7 +147,7 @@ class ComSim
                 s1keys.each do |key|
                     s1v.each do |a|
                         a.each do |k,v|
-                            s1line += "," if s1line != ""
+                            s1line += "," if s1line != "" and k == key
                             s1line += "#{v}" if k == key
                         end
                     end
@@ -160,7 +160,7 @@ class ComSim
                     s2keys.each do |key|
                         s2v.each do |a|
                             a.each do |k,v|
-                                s2line += "," if s2line != ""
+                                s2line += "," if s2line != "" and k == key
                                 s2line += "#{v}" if k == key
                             end
                         end
@@ -169,8 +169,8 @@ class ComSim
                 @person2.apply_variants(s2v)
                 data = run_fight(@person1, @person2)
                 answer = ""
-                answer += s1line if s1line != ""
-                answer += s2line if s2line != ""
+                answer += s1line + "," if s1line != ""
+                answer += s2line + "," if s2line != ""
                 answer += data.join(",")
                 puts answer
             end
@@ -205,10 +205,10 @@ class ComSim
             histo[r-1] += 1 
         end
         index = 0
-        count = 0
+        tttcount = 0
         histo.each do |x|
-            index = count if x != 0
-            count += 1
+            index = tttcount if x != 0
+            tttcount += 1
         end
         [p1win, p2win, count, round_long, round_total.to_f/count.to_f, round_small, death_count, knock_out_count, resigned_count, histo[0..index] ]
     end

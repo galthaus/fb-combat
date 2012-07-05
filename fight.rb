@@ -80,7 +80,7 @@ class Fight
     def do_attack(attacker, defender, is_counter = false, counter_count = 0)
         puts "#{attacker.name} #{is_counter ? "counters" : "attacks"} #{defender.name}" if $print_flow
         attack_type = attacker.attack_type
-        attack_type = attacker.counter_attack_type if is_counter
+        attack_type = attacker.counter_attack_type(defender) if is_counter
 
         # If fencing, guess and award advantage.
         advantage = defender.guess_attack(attacker) == attack_type ? :defender : :attacker
@@ -91,7 +91,7 @@ class Fight
         end
 
         # Attack defender
-        hc = is_counter ? counter_chance(attacher, defender) : hit_chance(attacker, defender)
+        hc = is_counter ? counter_chance(attacker, defender) : hit_chance(attacker, defender)
 
         hit, crit, action_mod = Utils.skill_test(hc, true, advantage == :attacker)
         puts "  #{attacker.name} #{crit ? "critical " : ""}#{action_mod}#{attack_type} #{defender.name}" if $print_flow and hit
