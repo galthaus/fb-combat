@@ -364,5 +364,52 @@ class TestPerson < Test::Unit::TestCase
         assert_equal :tail, p1.get_location(p1)
     end
 
+    def test_attack_type
+        p1 = Person.new("James", {:attack_type => :tail})
+        assert_equal :tail, p1.default_attack_type
+        assert_equal nil, p1.attack_type
+        p1.get_actions
+        assert_equal :tail, p1.attack_type
+    end
+
+    def test_guess_attack
+        a = Global::ATTACK_GUESS_DEFAULT
+        a[:wrong] = false
+        p1 = Person.new("James", {:weapon => "rapier", :attack_guess => a})
+        $mock_die = [ 5 ]
+        assert_equal :lunge, p1.guess_attack(p1)
+        $mock_die = nil
+        $mock_die = [ 45 ]
+        assert_equal :slash, p1.guess_attack(p1)
+        $mock_die = nil
+        $mock_die = [ 95 ]
+        assert_equal :thrust, p1.guess_attack(p1)
+        $mock_die = nil
+        $mock_die = [ 195 ]
+        assert_equal :fred, p1.guess_attack(p1)
+        $mock_die = nil
+
+        p1 = Person.new("James", {:attack_guess => {:right => true}, :attack_type => :john})
+        p1.get_actions(p1)
+        $mock_die = [ 5 ]
+        assert_equal :john, p1.guess_attack(p1)
+        $mock_die = nil
+        p1 = Person.new("James", {:attack_guess => {:wrong => true}, :attack_type => :john})
+        p1.get_actions(p1)
+        $mock_die = [ 5 ]
+        assert_equal :fred, p1.guess_attack(p1)
+        $mock_die = nil
+        p1 = Person.new("James", {:attack_guess => {:right => false, :wrong => true}, :attack_type => :john})
+        p1.get_actions(p1)
+        $mock_die = [ 5 ]
+        assert_equal :fred, p1.guess_attack(p1)
+        $mock_die = nil
+        p1 = Person.new("James", {:attack_guess => {:right => true, :wrong => true}, :attack_type => :john})
+        p1.get_actions(p1)
+        $mock_die = [ 5 ]
+        assert_equal :john, p1.guess_attack(p1)
+        $mock_die = nil
+    end
+
 end
 

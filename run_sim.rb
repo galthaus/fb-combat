@@ -18,7 +18,10 @@ compare = {
     :hit_points => (12..12),
     :expertise => [10,12,14,16,18,20,22,24],
     :weapon => ["longsword", "rapier"],
-    :style => [ :french ]
+    :style => [ :french ],
+    :attack_guess => [{ :right => true }]  # This line means the defender always guesses right!
+#    :attack_guess => [{ :wrong => true }]  # This line means the defender always guesses wrong!
+#    :attack_guess => [{:choices => { :slash => 30, :lunge => 30, :thrust => 40 }}]  # This line means the defender guess in those percentages!
 }
 compare1 = compare
 

@@ -43,6 +43,11 @@ class Fight
 
         # If fencing, guess and award advantage.
         advantage = defender.guess_attack(attacker) == attack_type ? :defender : :attacker
+        if advantage == :attacker
+            puts "  #{attacker.name} (attacker) has advantage" if $print_flow
+        else
+            puts "  #{defender.name} (defender) has advantage" if $print_flow
+        end
 
         # Attack defender
         hc = is_counter ? attacker.counter_chance(defender) : attacker.hit_chance(defender)

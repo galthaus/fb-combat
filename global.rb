@@ -29,6 +29,17 @@ class Global
 
     SCRATCH_DEFAULT = 1
 
+    ATTACK_GUESS_DEFAULT = { 
+        :right => false,
+        :wrong => true, 
+        :choices => {
+            :lunge => 40,
+            :slash => 30,
+            :thrust => 30
+        }
+    }
+    ATTACK_TYPE_DEFAULT = :slash
+
     COMBAT_STYLE_DEFAULT = :french
     COMBAT_STYLE_LIST = [ :french, :italian, :spanish, :none ]
     COMBAT_STYLE_ATTACK_BONUS = {

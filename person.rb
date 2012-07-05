@@ -18,6 +18,8 @@ class Person
     attr_accessor :high_quality_weapon
     attr_accessor :actions
     attr_accessor :attack_location
+    attr_accessor :attack_guess
+    attr_accessor :default_attack_type
     attr_reader :died
     attr_reader :resigned
     attr_reader :knocked_out
@@ -56,6 +58,8 @@ class Person
         @offhand_weapon = options[:offhand_weapon] || Global::OFFHAND_WEAPON_DEFAULT
         @high_quality_weapon = options[:high_quality_weapon]
         @high_quality_weapon = Global::HIGH_WEAPON_QUALITY_DEFAULT if @high_quality_weapon.nil?
+        @attack_guess = options[:attack_guess] || Global::ATTACK_GUESS_DEFAULT 
+        @default_attack_type = options[:attack_type] || Global::ATTACK_TYPE_DEFAULT 
         reset
     end
 
@@ -159,7 +163,21 @@ class Person
 
     def guess_attack(opponent)
         if opponent.weapon_type == :fencing
-            return :thrust # One of :thrust, :lunge, :slash
+            right = @attack_guess[:right] rescue false
+            wrong = @attack_guess[:wrong] rescue false
+            return opponent.attack_type if right
+            return :fred if wrong
+
+            choices = @attack_guess[:choices] rescue nil
+            return :fred unless choices
+            count = choices.values.inject(0, :+)
+            roll = Utils.roll("1d#{count}")
+            sum = 0
+            choices.sort { |x,y| x.to_s <=> y.to_s }.each do |k,v|
+                return k if roll <= v
+                roll -= v
+            end
+            return :fred
         end
         return opponent.weapon_type
     end
@@ -183,7 +201,7 @@ class Person
            @actions = [ :attack, :parry ]
        end
        @opponent = opponents.first rescue nil
-       @attack_type = :slash
+       @attack_type = @default_attack_type
     end
 
     def parrying?
@@ -227,7 +245,7 @@ class Person
     end
 
     def counter_attack_type(opponent)
-        :slash # or :thrust
+        @default_attack_type
     end
 
     def get_location(opponent)
