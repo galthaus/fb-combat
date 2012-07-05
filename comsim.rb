@@ -7,7 +7,8 @@ require 'global'
 
 class ComSim
 
-    def initialize(p1, p2, s1v = nil, s2v = nil)
+    def initialize(p1, p2, ctx = nil, s1v = nil, s2v = nil)
+        @context = ctx
         @person1 = p1
         @person2 = p2
 
@@ -91,6 +92,11 @@ class ComSim
         end
 
         puts "Running #{s1people.size * s2people.size} Combos: #{s1people.size} X #{s2people.size}" if @debug
+        if @context
+            @context.each do |k,v|
+                puts "#{k},#{v}"
+            end
+        end
         if s1const == [[:base]]
             puts "Player1,base"
         else
@@ -172,7 +178,7 @@ class ComSim
     end
 
     def run_fight(p1, p2)
-        f = Fight.new([p1], [p2])
+        f = Fight.new([p1], [p2], @context)
 
         p p1 if $verbose
         p p2 if $verbose

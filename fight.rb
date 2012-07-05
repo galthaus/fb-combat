@@ -8,7 +8,14 @@ class Fight
     attr_accessor :sideA
     attr_accessor :sideB
 
-    def initialize(side1, side2)
+    def initialize(side1, side2, ctx = nil)
+        @context = ctx || {}
+        @context[:attack_base] = Global::ATTACK_BASE_DEFAULT unless @context[:attack_base]
+        @context[:parry_base] = Global::PARRY_BASE_DEFAULT unless @context[:parry_base]
+        @context[:evade_base] = Global::EVADE_BASE_DEFAULT unless @context[:evade_base]
+        @context[:counter_bonus] = Global::COUNTER_BONUS_DEFAULT unless @context[:counter_bonus]
+        @context[:reaction_parry_penalty] = Global::REACTION_PARRY_PENALTY unless @context[:reaction_parry_penalty]
+        @context[:scratch] = Global::SCRATCH_DEFAULT unless @context[:scratch]
         @sideA = side1
         @sideA.each { |x| x.side = "A" }
         @sideB = side2
@@ -35,6 +42,40 @@ class Fight
         }
     end
 
+    def hit_chance(attacker, defender)
+        value = @context[:attack_base]
+        value += attacker.expertise
+        value -= defender.expertise
+        value += Utils.weapon_quality_bonus(attacker.high_quality_weapon)
+        value += Utils.weapon_attack_bonus(attacker.weapon)
+        value += Utils.style_attack_bonus(attacker.style, attacker.attack_type)
+        value
+    end
+
+    def parry_chance(attacker, defender)
+        value = @context[:parry_base]
+        value += attacker.expertise
+        value -= defender.expertise
+        value += Utils.weapon_quality_bonus(attacker.high_quality_weapon)
+        value += Utils.weapon_defense_bonus(attacker.weapon)
+        value -= Utils.weapon_defense_penalty(defender.weapon)
+        value += Utils.offhand_weapon_parry_bonus(attacker.style, attacker.offhand_weapon) unless attacker.lose_offhand_bonus
+        value
+    end
+
+    def evade_chance(attacker, defender)
+        value = @context[:evade_base]
+        value += attacker.expertise
+        value -= defender.expertise
+        value
+    end
+
+    def counter_chance(attacker, defender)
+        value = hit_chance(attacker, defender)
+        value += @context[:counter_bonus]
+        value
+    end
+
     # GREG: Undo tail recursion one day.
     def do_attack(attacker, defender, is_counter = false, counter_count = 0)
         puts "#{attacker.name} #{is_counter ? "counters" : "attacks"} #{defender.name}" if $print_flow
@@ -50,7 +91,7 @@ class Fight
         end
 
         # Attack defender
-        hc = is_counter ? attacker.counter_chance(defender) : attacker.hit_chance(defender)
+        hc = is_counter ? counter_chance(attacher, defender) : hit_chance(attacker, defender)
 
         hit, crit, action_mod = Utils.skill_test(hc, true, advantage == :attacker)
         puts "  #{attacker.name} #{crit ? "critical " : ""}#{action_mod}#{attack_type} #{defender.name}" if $print_flow and hit
@@ -60,12 +101,13 @@ class Fight
             if defender.defending?
                 action = "parried" if defender.parrying?
                 action = "evaded" if defender.evading?
-                dc = defender.parry_chance(attacker) if defender.parrying?
-                dc = defender.evade_chance(attacker) if defender.evading?
+                dc = parry_chance(defender, attacker) if defender.parrying?
+                dc = evade_chance(defender, attacker) if defender.evading?
             else
                 # Reaction Parry - if possible
                 action = "reaction parried"
-                dc = defender.parry_chance(attacker) - 6 # GREG: Formula for this
+                # GREG: Formula for this
+                dc = parry_chance(defender, attacker) - @context[:reaction_parry_penalty] 
             end
 
             val, dcrit, action_mod = Utils.skill_test(dc, true, advantage == :defender)
@@ -79,7 +121,7 @@ class Fight
         if hit
             action = "damages"
             dam = 2
-            dam += Global::SCRATCH_DEFAULT if attacker.weapon_type == :fencing or attacker.weapon_type == :heavy
+            dam += @context[:scratch] if attacker.weapon_type == :fencing or attacker.weapon_type == :heavy
             action = "crits" if crit
             dam += Utils.roll("1d4") if crit
             location = attacker.get_location(defender)

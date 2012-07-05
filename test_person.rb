@@ -329,20 +329,6 @@ class TestPerson < Test::Unit::TestCase
         $end_check_override = false
     end
 
-    def test_chance_functions
-        p1 = Person.new("Fred", {:expertise => 10})
-        p2 = Person.new("James", {:expertise => 10})
-        assert_equal 10, p1.hit_chance(p2)
-        assert_equal 10, p2.hit_chance(p1)
-        assert_equal 11, p1.parry_chance(p2)
-        assert_equal 11, p2.parry_chance(p1)
-        assert_equal 6, p1.evade_chance(p2)
-        assert_equal 6, p2.evade_chance(p1)
-        assert_equal 11, p1.counter_chance(p2)
-        assert_equal 11, p2.counter_chance(p1)
-        # This could be more, but not now.  It is enough for simple tests.
-    end
-
     def test_weapon_type
         p1 = Person.new("James", {:weapon => "fred"})
         assert_equal :brawling, p1.weapon_type

@@ -11,6 +11,15 @@ $iter_count = ARGV[0].to_i rescue 1000
 p1 = Person.new("Alex")
 p2 = Person.new("Fred")
 
+context = {
+    :attack_base => 8,
+    :parry_base => 7,
+    :evade_base => 6,
+    :counter_bonus => 1,
+    :scratch => 1,
+    :reaction_parry_penalty => 6
+}
+
 # Big Run
 compare = { 
     :attack_location => [ :chest ], # Or build subsets :chest, :flank, :right_arm, :right_leg, :left_arm, :left_leg
@@ -29,7 +38,7 @@ compare = {
 }
 compare1 = compare
 
-cs = ComSim.new(p1, p2, compare, compare1)
+cs = ComSim.new(p1, p2, context, compare, compare1)
 cs.run_combos
 
 t2 = Time.now

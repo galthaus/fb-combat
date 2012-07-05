@@ -127,40 +127,6 @@ class Person
         @actions = [] if @stunned
     end
 
-    def hit_chance(opponent)
-        value = Global::ATTACK_BASE_DEFAULT
-        value += @expertise
-        value -= opponent.expertise
-        value += Utils.weapon_quality_bonus(@high_quality_weapon)
-        value += Utils.weapon_attack_bonus(@weapon)
-        value += Utils.style_attack_bonus(@style, @attack_type)
-        value
-    end
-
-    def parry_chance(opponent)
-        value = Global::PARRY_BASE_DEFAULT
-        value += @expertise
-        value -= opponent.expertise
-        value += Utils.weapon_quality_bonus(@high_quality_weapon)
-        value += Utils.weapon_defense_bonus(@weapon)
-        value -= Utils.weapon_defense_penalty(opponent.weapon)
-        value += Utils.offhand_weapon_parry_bonus(@style, @offhand_weapon) unless @lose_offhand_bonus
-        value
-    end
-
-    def evade_chance(opponent)
-        value = Global::EVADE_BASE_DEFAULT
-        value += @expertise
-        value -= opponent.expertise
-        value
-    end
-
-    def counter_chance(opponent)
-        value = hit_chance(opponent)
-        value += Global::COUNTER_BONUS_DEFAULT
-        value
-    end
-
     def guess_attack(opponent)
         if opponent.weapon_type == :fencing
             right = @attack_guess[:right] rescue false
