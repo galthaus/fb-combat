@@ -202,7 +202,7 @@ class TestUtils < Test::Unit::TestCase
     def test_style_attack_bonus
         assert_equal Utils.style_attack_bonus(:horse, :pig), 0
         assert_equal Utils.style_attack_bonus(:french, :pig), 0
-        assert_equal Utils.style_attack_bonus(:italian, :thrust), 1
+        assert_equal Utils.style_attack_bonus(:italian, :thrust), 2
     end
 
 end
