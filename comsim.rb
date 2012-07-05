@@ -183,7 +183,7 @@ class ComSim
         death_count = knock_out_count = resigned_count = 0
         p1win = p2win = 0
         count = $iter_count
-        histo = {}
+        histo = Array.new(250, 0)
         count.times do
             p1.reset
             p2.reset
@@ -196,10 +196,15 @@ class ComSim
             death_count += 1 if p1.died or p2.died
             knock_out_count += 1 if p1.knocked_out or p2.knocked_out
             resigned_count += 1 if p1.resigned or p2.resigned
-            histo[r] = 0 unless histo[r]
-            histo[r] += 1 
+            histo[r-1] += 1 
         end
-        [p1win, p2win, count, round_long, round_total.to_f/count.to_f, round_small, death_count, knock_out_count, resigned_count, histo.sort {|x,y| x[0] <=> y[0] }.map{|x| x[1]} ]
+        index = 0
+        count = 0
+        histo.each do |x|
+            index = count if x != 0
+            count += 1
+        end
+        [p1win, p2win, count, round_long, round_total.to_f/count.to_f, round_small, death_count, knock_out_count, resigned_count, histo[0..index] ]
     end
 
 end
