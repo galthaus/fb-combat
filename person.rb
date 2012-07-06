@@ -160,6 +160,7 @@ class Person
            @actions = @default_actions
        end
        @opponent = opponents.first rescue nil
+       # GREG: This should be configurable.
        @attack_type = @default_attack_type
     end
 

@@ -106,7 +106,6 @@ class Fight
             else
                 # Reaction Parry - if possible
                 action = "reaction parried"
-                # GREG: Formula for this
                 dc = parry_chance(defender, attacker) - @context[:reaction_parry_penalty] 
             end
 
