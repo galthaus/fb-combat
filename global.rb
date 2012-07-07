@@ -35,6 +35,7 @@ class Global
     ATTACK_LOCATION_DEFAULT = :head
 
     SCRATCH_DEFAULT = 1
+    CRIT_DAMAGE_DEFAULT = "1d4"
 
     ATTACK_GUESS_DEFAULT = { 
         :right => false,

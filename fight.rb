@@ -22,6 +22,7 @@ class Fight
         @context[:counter_bonus] = Global::COUNTER_BONUS_DEFAULT unless @context[:counter_bonus]
         @context[:reaction_parry_penalty] = Global::REACTION_PARRY_PENALTY unless @context[:reaction_parry_penalty]
         @context[:scratch] = Global::SCRATCH_DEFAULT unless @context[:scratch]
+        @context[:crit_damage] = Global::CRIT_DAMAGE_DEFAULT unless @context[:crit_damage]
         @sideA = side1
         @sideA.each { |x| x.side = "A" }
         @sideB = side2
@@ -82,6 +83,15 @@ class Fight
         value
     end
 
+    def calculate_damage(attacker, attack_type, defender, crit)
+        dam = 0
+        dam += @context[:scratch] if attacker.weapon_type == :fencing or attacker.weapon_type == :heavy
+        dam += Utils.roll(@context[:crit_damage]) if crit
+        dam += Utils.damage_style_type(attacker.style, attack_type)
+        dam += Utils.damage_weapon_type(attacker.weapon, attack_type)
+        dam
+    end
+
     # GREG: Undo tail recursion one day.
     def do_attack(attacker, defender, is_counter = false, counter_count = 0)
         puts "#{attacker.name} #{is_counter ? "counters" : "attacks"} #{defender.name}" if $print_flow
@@ -125,12 +135,8 @@ class Fight
         # Do damage
         if hit
             action = "damages"
-            dam = 0
-            dam += @context[:scratch] if attacker.weapon_type == :fencing or attacker.weapon_type == :heavy
             action = "crits" if crit
-            dam += Utils.roll("1d4") if crit
-            dam += Utils.damage_style_type(attacker.style, attack_type)
-            dam += Utils.damage_weapon_type(attacker.weapon, attack_type)
+            dam = calculate_damage(attacker, attack_type, defender, crit)
             location = attacker.get_location(defender)
             loc = Utils.determine_location(location)
             puts "  #{attacker.name} targets the #{location}" if $print_flow

@@ -21,6 +21,7 @@ context = {
     :pb_de_mult => 1.0, # Parry Base Defender Experience Multiplier
     :eb_at_mult => 1.0, # Evade Base Attacker Experience Multiplier
     :eb_de_mult => 1.0, # Evade Base Defender Experience Multiplier
+    :crit_damage => "1d4", # Extra damage on a crit
     :counter_bonus => 1,
     :scratch => 1,
     :reaction_parry_penalty => 6
