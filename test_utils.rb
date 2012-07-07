@@ -205,5 +205,23 @@ class TestUtils < Test::Unit::TestCase
         assert_equal Utils.style_attack_bonus(:italian, :thrust), 2
     end
 
+    def test_damage_style_type
+        assert_equal Utils.damage_style_type(:horse, :pig), 0
+        assert_equal Utils.damage_style_type(:spanish, :pig), 0
+        assert_equal Utils.damage_style_type(:spanish, :slash), 1
+    end
+
+    def test_damage_weapon_type
+        assert_equal Utils.damage_weapon_type(:horse, :pig), 0
+        assert_equal Utils.damage_weapon_type(:horse, :slash), 2
+        assert_equal Utils.damage_weapon_type("unknown", :slash), 2
+        assert_equal Utils.damage_weapon_type("unknown", :fred), 0
+        assert_equal Utils.damage_weapon_type("rapiers", :pig), 0
+        assert_equal Utils.damage_weapon_type("rapiers", :thrust), 3
+        assert_equal Utils.damage_weapon_type("sabre", :thrust), 2
+        assert_equal Utils.damage_weapon_type("longsword", :thrust), 2
+        assert_equal Utils.damage_weapon_type("unknown", :thrust), 2
+    end
+
 end
 

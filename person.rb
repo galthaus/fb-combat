@@ -88,10 +88,10 @@ class Person
         value
     end
 
-    def take_damage(loc, d)
+    def take_damage(loc, d, dmin)
         # Handle Damage
         d -= armor[loc]
-        d = Global::SCRATCH_DEFAULT if d < Global::SCRATCH_DEFAULT
+        d = dmin if d < dmin
 
         puts "#{@name} takes #{d} in the #{loc}" if $print_flow
         @damage[loc] += d

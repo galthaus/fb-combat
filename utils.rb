@@ -143,6 +143,23 @@ class Utils
         bonus
     end
 
+    def self.damage_style_type(style, attack_type)
+        style = Global::DAMAGE_STYLE_TYPE[style]
+        return 0 unless style
+        bonus = style[attack_type]
+        return 0 unless bonus
+        bonus
+    end
+
+    def self.damage_weapon_type(weapon, attack_type)
+        weapon = Global::DAMAGE_WEAPON_TYPE[weapon]
+        weapon = Global::DAMAGE_WEAPON_TYPE["unknown"] unless weapon
+        return 0 unless weapon
+        bonus = weapon[attack_type]
+        return 0 unless bonus
+        bonus
+    end
+
 end
 
 

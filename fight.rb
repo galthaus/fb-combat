@@ -123,11 +123,13 @@ class Fight
             dam += @context[:scratch] if attacker.weapon_type == :fencing or attacker.weapon_type == :heavy
             action = "crits" if crit
             dam += Utils.roll("1d4") if crit
+            dam += Utils.damage_style_type(attacker.style, attack_type)
+            dam += Utils.damage_weapon_type(attacker.weapon, attack_type)
             location = attacker.get_location(defender)
             loc = Utils.determine_location(location)
             puts "  #{attacker.name} targets the #{location}" if $print_flow
             puts "  #{attacker.name} #{action} #{defender.name} to the #{loc}" if $print_flow
-            defender.take_damage(loc, dam)
+            defender.take_damage(loc, dam, @context[:scratch])
         end
 
         # If missed and defender has counter, start the counters!!

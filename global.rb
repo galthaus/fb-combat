@@ -93,5 +93,19 @@ class Global
         "sabre" => 2,
         "rapier" => 2
     }
+
+    DAMAGE_WEAPON_TYPE = {
+        "unknown" => { :thrust => 2, :slash => 2, :lunge => 4 },
+        "longsword" => { :thrust => 2, :slash => 2, :lunge => 4 },
+        "sabre" => { :thrust => 2, :slash => 3, :lunge => 4 },
+        "rapiers" => { :thrust => 3, :slash => 2, :lunge => 4 }
+    }
+
+    DAMAGE_STYLE_TYPE = {
+        :spanish => {
+            :slash => 1
+        }
+    }
+
 end
 

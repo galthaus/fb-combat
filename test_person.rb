@@ -196,85 +196,85 @@ class TestPerson < Test::Unit::TestCase
     def test_take_damage
         # Hit Head
         p = Person.new
-        p.take_damage(:head, 1)
+        p.take_damage(:head, 1, 1)
         validate_damage(p, :head, 1, false, false, false, false, false)
 
         p = Person.new
-        p.take_damage(:head, 2)
+        p.take_damage(:head, 2, 1)
         validate_damage(p, :head, 1, false, false, false, false, false)
 
         p = Person.new
-        p.take_damage(:head, 3)
+        p.take_damage(:head, 3, 1)
         validate_damage(p, :head, 1, false, false, false, false, false)
 
         p = Person.new
         p.get_actions
         assert p.actions.size > 1
-        p.take_damage(:head, 4)
+        p.take_damage(:head, 4, 1)
         validate_damage(p, :head, 2, false, false, false, true, false)
         assert p.actions.size == 0
 
         p = Person.new
-        p.take_damage(:head, 5)
+        p.take_damage(:head, 5, 1)
         validate_damage(p, :head, 3, false, false, false, true, false)
 
         p = Person.new
-        p.take_damage(:head, 6)
+        p.take_damage(:head, 6, 1)
         validate_damage(p, :head, 4, false, false, false, true, false)
 
         p = Person.new
-        p.take_damage(:head, 7)
+        p.take_damage(:head, 7, 1)
         validate_damage(p, :head, 5, false, false, false, true, false)
 
         p = Person.new
-        p.take_damage(:head, 8)
+        p.take_damage(:head, 8, 1)
         validate_damage(p, :head, 6, false, false, true, true, false)
 
         p = Person.new
-        p.take_damage(:head, 9)
+        p.take_damage(:head, 9, 1)
         validate_damage(p, :head, 7, false, true, false, true, false)
 
         p = Person.new
-        p.take_damage(:head, 1)
+        p.take_damage(:head, 1, 1)
         validate_damage(p, :head, 1, false, false, false, false, false)
-        p.take_damage(:head, 1)
+        p.take_damage(:head, 1, 1)
         validate_damage(p, :head, 2, false, false, false, false, false)
-        p.take_damage(:head, 1)
+        p.take_damage(:head, 1, 1)
         validate_damage(p, :head, 3, false, false, false, false, false)
-        p.take_damage(:head, 1)
+        p.take_damage(:head, 1, 1)
         validate_damage(p, :head, 4, false, false, false, false, false)
-        p.take_damage(:head, 1)
+        p.take_damage(:head, 1, 1)
         validate_damage(p, :head, 5, false, false, false, false, false)
-        p.take_damage(:head, 1)
+        p.take_damage(:head, 1, 1)
         validate_damage(p, :head, 6, false, false, true, false, false)
-        p.take_damage(:head, 1)
+        p.take_damage(:head, 1, 1)
         validate_damage(p, :head, 7, false, true, false, false, false)
 
         # Right Arm, Right Leg, and Left Leg work the same.
         [:left_leg, :right_leg, :right_arm].each do |slot|
             p = Person.new
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 1, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 2, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 3, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 4, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 5, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 6, true, false, false, false, false)
 
             $end_check_override = true
             $end_check_override_value = false
             p = Person.new
-            p.take_damage(slot, 5)
+            p.take_damage(slot, 5, 1)
             validate_damage(p, slot, 3, true, false, false, false, false)
 
             $end_check_override_value = true
             p = Person.new
-            p.take_damage(slot, 5)
+            p.take_damage(slot, 5, 1)
             validate_damage(p, slot, 3, false, false, false, false, false)
             $end_check_override = false
         end
@@ -282,49 +282,49 @@ class TestPerson < Test::Unit::TestCase
         # Flank and Chest are the same
         [:flank, :chest].each do |slot|
             p = Person.new
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 1, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 2, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 3, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 4, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 5, false, false, false, false, false)
-            p.take_damage(slot, 1)
+            p.take_damage(slot, 1, 1)
             validate_damage(p, slot, 6, false, false, true, false, false)
 
             p = Person.new
-            p.take_damage(slot, 6)
+            p.take_damage(slot, 6, 1)
             validate_damage(p, slot, 4, false, false, false, true, false)
         end
 
         # Left Arm
         slot = :left_arm
         p = Person.new
-        p.take_damage(slot, 1)
+        p.take_damage(slot, 1, 1)
         validate_damage(p, slot, 1, false, false, false, false, false)
-        p.take_damage(slot, 1)
+        p.take_damage(slot, 1, 1)
         validate_damage(p, slot, 2, false, false, false, false, false)
-        p.take_damage(slot, 1)
+        p.take_damage(slot, 1, 1)
         validate_damage(p, slot, 3, false, false, false, false, false)
-        p.take_damage(slot, 1)
+        p.take_damage(slot, 1, 1)
         validate_damage(p, slot, 4, false, false, false, false, false)
-        p.take_damage(slot, 1)
+        p.take_damage(slot, 1, 1)
         validate_damage(p, slot, 5, false, false, false, false, false)
-        p.take_damage(slot, 1)
+        p.take_damage(slot, 1, 1)
         validate_damage(p, slot, 6, false, false, false, false, true)
 
         $end_check_override = true
         $end_check_override_value = false
         p = Person.new
-        p.take_damage(slot, 5)
+        p.take_damage(slot, 5, 1)
         validate_damage(p, slot, 3, false, false, false, false, false)
 
         $end_check_override_value = true
         p = Person.new
-        p.take_damage(slot, 5)
+        p.take_damage(slot, 5, 1)
         validate_damage(p, slot, 3, false, false, false, false, false)
         $end_check_override = false
     end
@@ -405,6 +405,15 @@ class TestPerson < Test::Unit::TestCase
         actions_test([:attack, :evade], true, true, false, true, false)
     end
 
+    def test_stunned_actions
+        p1 = Person.new("James", {:attack_type => :slash, :stun_action => :attack})
+        p1.take_damage(:head, 5, 1)
+        assert_equal true, p1.stunned
+        p1.get_actions([p1])
+        assert_equal [:stun, :attack], p1.actions
+        assert_equal false, p1.stunned
+    end
+
     def test_guess_attack
         a = Global::ATTACK_GUESS_DEFAULT
         a[:wrong] = false
@@ -442,6 +451,15 @@ class TestPerson < Test::Unit::TestCase
         $mock_die = [ 5 ]
         assert_equal :john, p1.guess_attack(p1)
         $mock_die = nil
+
+        p1 = Person.new("James", {:weapon => "club"})
+        p1.get_actions(p1)
+        assert_equal :brawling, p1.guess_attack(p1)
+    end
+
+    def test_counter_attack_type
+        p1 = Person.new("James", {:counter_attack_type => :tail})
+        assert_equal :tail, p1.counter_attack_type(p1)
     end
 
 end
