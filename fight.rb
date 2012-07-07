@@ -11,8 +11,14 @@ class Fight
     def initialize(side1, side2, ctx = nil)
         @context = ctx || {}
         @context[:attack_base] = Global::ATTACK_BASE_DEFAULT unless @context[:attack_base]
+        @context[:ab_at_mult] = Global::AB_AT_MULT_DEFAULT unless @context[:ab_at_mult]
+        @context[:ab_de_mult] = Global::AB_DE_MULT_DEFAULT unless @context[:ab_de_mult]
         @context[:parry_base] = Global::PARRY_BASE_DEFAULT unless @context[:parry_base]
+        @context[:pb_at_mult] = Global::PB_AT_MULT_DEFAULT unless @context[:pb_at_mult]
+        @context[:pb_de_mult] = Global::PB_DE_MULT_DEFAULT unless @context[:pb_de_mult]
         @context[:evade_base] = Global::EVADE_BASE_DEFAULT unless @context[:evade_base]
+        @context[:eb_at_mult] = Global::EB_AT_MULT_DEFAULT unless @context[:eb_at_mult]
+        @context[:eb_de_mult] = Global::EB_DE_MULT_DEFAULT unless @context[:eb_de_mult]
         @context[:counter_bonus] = Global::COUNTER_BONUS_DEFAULT unless @context[:counter_bonus]
         @context[:reaction_parry_penalty] = Global::REACTION_PARRY_PENALTY unless @context[:reaction_parry_penalty]
         @context[:scratch] = Global::SCRATCH_DEFAULT unless @context[:scratch]
@@ -44,8 +50,8 @@ class Fight
 
     def hit_chance(attacker, defender)
         value = @context[:attack_base]
-        value += attacker.expertise
-        value -= defender.expertise
+        value += attacker.expertise * @context[:ab_at_mult]
+        value -= defender.expertise * @context[:ab_de_mult]
         value += Utils.weapon_quality_bonus(attacker.high_quality_weapon)
         value += Utils.weapon_attack_bonus(attacker.weapon)
         value += Utils.style_attack_bonus(attacker.style, attacker.attack_type)
@@ -54,8 +60,8 @@ class Fight
 
     def parry_chance(attacker, defender)
         value = @context[:parry_base]
-        value += attacker.expertise
-        value -= defender.expertise
+        value += attacker.expertise * @context[:pb_at_mult]
+        value -= defender.expertise * @context[:pb_de_mult]
         value += Utils.weapon_quality_bonus(attacker.high_quality_weapon)
         value += Utils.weapon_defense_bonus(attacker.weapon)
         value -= Utils.weapon_defense_penalty(defender.weapon)
@@ -65,8 +71,8 @@ class Fight
 
     def evade_chance(attacker, defender)
         value = @context[:evade_base]
-        value += attacker.expertise
-        value -= defender.expertise
+        value += attacker.expertise * @context[:eb_at_mult]
+        value -= defender.expertise * @context[:eb_de_mult]
         value
     end
 
