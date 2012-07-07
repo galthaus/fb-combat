@@ -59,10 +59,10 @@ class Fight
         value
     end
 
-    def parry_chance(attacker, defender)
+    def parry_chance(defender, attacker)
         value = @context[:parry_base]
-        value += (attacker.expertise * @context[:pb_at_mult]).to_i
-        value -= (defender.expertise * @context[:pb_de_mult]).to_i
+        value += (defender.expertise * @context[:pb_de_mult]).to_i
+        value -= (attacker.expertise * @context[:pb_at_mult]).to_i
         value += Utils.weapon_quality_bonus(attacker.high_quality_weapon)
         value += Utils.weapon_defense_bonus(attacker.weapon)
         value -= Utils.weapon_defense_penalty(defender.weapon)
@@ -70,10 +70,10 @@ class Fight
         value
     end
 
-    def evade_chance(attacker, defender)
+    def evade_chance(defender, attacker)
         value = @context[:evade_base]
-        value += (attacker.expertise * @context[:eb_at_mult]).to_i
-        value -= (defender.expertise * @context[:eb_de_mult]).to_i
+        value += (defender.expertise * @context[:eb_de_mult]).to_i
+        value -= (attacker.expertise * @context[:eb_at_mult]).to_i
         value
     end
 
