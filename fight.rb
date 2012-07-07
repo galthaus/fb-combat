@@ -125,7 +125,7 @@ class Fight
         # Do damage
         if hit
             action = "damages"
-            dam = 2
+            dam = 0
             dam += @context[:scratch] if attacker.weapon_type == :fencing or attacker.weapon_type == :heavy
             action = "crits" if crit
             dam += Utils.roll("1d4") if crit
