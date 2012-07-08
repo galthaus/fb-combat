@@ -153,15 +153,57 @@ class Person
     end
 
     def get_actions(opponents = nil)
-       if @stunned
-           @actions = [ :stun, @stun_action ]
-           @stunned = false
-       else
-           @actions = @default_actions
-       end
-       @opponent = opponents.first rescue nil
-       # GREG: This should be configurable.
-       @attack_type = @default_attack_type
+        if @stunned
+            @actions = [ :stun, @stun_action ]
+            @stunned = false
+        else
+            @actions = @default_actions
+        end
+        @opponent = opponents.first rescue nil
+
+        # Random assign attack_type
+        if @default_attack_type[:use_force]
+            @attack_type = @default_attack_type[:force]
+        else
+            choices = @default_attack_type[:choices] rescue nil
+            @attack_type = :fred unless choices
+            if choices
+                count = choices.values.inject(0, :+)
+                # Remove lunge if we didn't choose attack
+                ignore_lunge = false
+                if choices[:lunge] and @actions.size != 1
+                    count -= choices[:lunge]
+                    ignore_lunge = true
+                end
+                roll = Utils.roll("1d#{count}")
+                sum = 0
+                choices.sort { |x,y| x.to_s <=> y.to_s }.each do |k,v|
+                    next if k == :lunge and ignore_lunge
+                    @attack_type = k
+                    break if roll <= v
+                    roll -= v
+                end
+            end
+        end
+        @attack_type = :lunge if @actions.size == 1
+    end
+
+    def counter_attack_type(opponent)
+        # Random assign attack_type
+        if @counter_attack_type[:use_force]
+            return @counter_attack_type[:force]
+        else
+            choices = @counter_attack_type[:choices] rescue nil
+            return :fred unless choices
+            count = choices.values.inject(0, :+)
+            roll = Utils.roll("1d#{count}")
+            sum = 0
+            choices.sort { |x,y| x.to_s <=> y.to_s }.each do |k,v|
+                return k if roll <= v
+                roll -= v
+            end
+            return :fred
+        end
     end
 
     def parrying?
@@ -202,10 +244,6 @@ class Person
 
     def active?
         !@died and !@knocked_out and !@resigned
-    end
-
-    def counter_attack_type(opponent)
-        @counter_attack_type
     end
 
     def get_location(opponent)

@@ -42,14 +42,36 @@ context = {
 #   [ attack ] # Lunge case 
 # 
 
+# Setting :use_force to true causes the system to use :force always
+# Setting :use_force to false causes the system to use the distribution.
+attack_type = {
+    :use_force => false,
+    :force => :slash,
+    :choices => {
+        :lunge => 40,
+        :slash => 30,
+        :thrust => 30
+    }
+}
+counter_type = {
+    :use_force => false,
+    :force => :slash,
+    :choices => {
+        :slash => 50,
+        :thrust => 50
+    }
+}
+
+attack_guess = { :right => true }  # This line means the defender always guesses right!
+# attack_guess = { :wrong => true }  # This line means the defender always guesses wrong!
+# attack_guess = {:choices => { :slash => 30, :lunge => 30, :thrust => 40 }}  # This line means the defender guess in those percentages!
+
 
 # Big Run
 compare = { 
     :attack_location => [ :chest ], # Or build subsets :chest, :flank, :right_arm, :right_leg, :left_arm, :left_leg
     :default_actions => [ [:attack, :counter] ], # Default action (:counter, :parry, :attack, :evade)
     :stun_action => [ :parry ], # Action to take when stunned
-    :default_attack_type => [ :thrust ], # Attack type: :slash, :lunge, :thrust
-    :counter_attack_type => [ :thrust ], # Attack type to use on counter: :slash, :thrust
     :endurance => (10..10), # Endurance 
     :dexterity => (13..13), # Dexterity
     :hit_points => (12..12), # (X..Y) means X to Y inclusive  (X...Y) means X to Y-1.
@@ -58,9 +80,9 @@ compare = {
     :high_quality_weapon => [ true ], # true or false if weapons are HQ
     :offhand_weapon => [:main_gauche], # :main_gauche, :good_stuff, :OK_stuff in a list
     :style => [ :french ], # styles are: :italian, :french, :spanish
-    :attack_guess => [{ :right => true }]  # This line means the defender always guesses right!
-#    :attack_guess => [{ :wrong => true }]  # This line means the defender always guesses wrong!
-#    :attack_guess => [{:choices => { :slash => 30, :lunge => 30, :thrust => 40 }}]  # This line means the defender guess in those percentages!
+    :default_attack_type => [ attack_type ], # Defined above as a variable
+    :counter_attack_type => [ counter_type ], # Defined above as a variable
+    :attack_guess => [ attack_guess ]  # This is defined above as a variable
 }
 compare1 = compare
 

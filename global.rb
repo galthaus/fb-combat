@@ -46,8 +46,18 @@ class Global
             :thrust => 30
         }
     }
-    ATTACK_TYPE_DEFAULT = :slash
-    COUNTER_ATTACK_TYPE_DEFAULT = :slash
+    ATTACK_TYPE_DEFAULT = {
+        :use_force => true,
+        :force => :slash,
+        :choices => {
+            :lunge => 40,
+            :slash => 30,
+            :thrust => 30
+        }
+    }
+
+    COUNTER_ATTACK_TYPE_DEFAULT = ATTACK_TYPE_DEFAULT
+
     STUN_ACTION_DEFAULT = :parry
     ACTIONS_DEFAULT = [:attack, :parry]
 
