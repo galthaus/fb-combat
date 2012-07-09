@@ -164,9 +164,10 @@ class Person
         # Random assign attack_type
         if @default_attack_type[:use_force]
             @attack_type = @default_attack_type[:force]
+            @attack_type = :slash if @attack_type == :lunge and @actions.size != 1
         else
             choices = @default_attack_type[:choices] rescue nil
-            @attack_type = :fred unless choices
+            @attack_type = :slash
             if choices
                 count = choices.values.inject(0, :+)
                 # Remove lunge if we didn't choose attack
@@ -179,7 +180,7 @@ class Person
                 sum = 0
                 choices.sort { |x,y| x.to_s <=> y.to_s }.each do |k,v|
                     next if k == :lunge and ignore_lunge
-                    @attack_type = k
+                    @attack_type = k if roll <= v
                     break if roll <= v
                     roll -= v
                 end

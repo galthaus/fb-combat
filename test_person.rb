@@ -350,8 +350,59 @@ class TestPerson < Test::Unit::TestCase
         assert_equal :tail, p1.get_location(p1)
     end
 
-    # GREG: Add variable attack_type tests
     def test_attack_type
+        a = {:use_force => true, :force => :tail}
+        p1 = Person.new("James", {:attack_type => a})
+        p1.get_actions(p1)
+        assert_equal :tail, p1.attack_type
+
+        a = {:use_force => true, :force => :tail}
+        p1 = Person.new("James", {:actions => [:attack], :attack_type => a})
+        p1.get_actions(p1)
+        assert_equal :lunge, p1.attack_type
+
+        a = {:use_force => true, :force => :lunge}
+        p1 = Person.new("James", {:actions => [:attack], :attack_type => a})
+        p1.get_actions(p1)
+        assert_equal :lunge, p1.attack_type
+
+        a = {:use_force => true, :force => :lunge}
+        p1 = Person.new("James", {:actions => [:attack, :parry], :attack_type => a})
+        p1.get_actions(p1)
+        assert_equal :slash, p1.attack_type
+
+        a = {:use_force => false, :force => :john, :choices => {:lunge => 30, :slash => 40, :thrust => 30}}
+        p1 = Person.new("James", {:actions => [:attack, :parry], :attack_type => a})
+        $mock_die = [ 5 ]
+        p1.get_actions(p1)
+        assert_equal :slash, p1.attack_type
+        $mock_die = nil
+        $mock_die = [ 55 ]
+        p1.get_actions(p1)
+        assert_equal :thrust, p1.attack_type
+        $mock_die = nil
+        $mock_die = [ 155 ]
+        p1.get_actions(p1)
+        assert_equal :slash, p1.attack_type
+        $mock_die = nil
+
+        a = {:use_force => false, :force => :john, :choices => {:lunge => 30, :slash => 40, :thrust => 30}}
+        p1 = Person.new("James", {:actions => [:attack], :attack_type => a})
+        $mock_die = [ 5 ]
+        p1.get_actions(p1)
+        assert_equal :lunge, p1.attack_type
+        $mock_die = nil
+        $mock_die = [ 55 ]
+        p1.get_actions(p1)
+        assert_equal :lunge, p1.attack_type
+        $mock_die = nil
+        $mock_die = [ 155 ]
+        p1.get_actions(p1)
+        assert_equal :lunge, p1.attack_type
+        $mock_die = nil
+    end
+
+    def test_attack_type_status_functions
         a = {:use_force => true, :force => :tail}
         p1 = Person.new("James", {:attack_type => a})
 
@@ -397,6 +448,8 @@ class TestPerson < Test::Unit::TestCase
         assert_equal par, p1.parrying?
         assert_equal eva, p1.evading?
         assert_equal cou, p1.countering?
+        assert_equal :lunge, p1.attack_type if p1.actions.size == 1
+        assert_not_equal :lunge, p1.attack_type if p1.actions.size != 1
     end
 
     def test_actions
@@ -406,16 +459,27 @@ class TestPerson < Test::Unit::TestCase
         actions_test([:parry, :counter], false, true, true, false, true)
         actions_test([:attack, :counter], true, false, false, false, true)
         actions_test([:attack, :evade], true, true, false, true, false)
+        actions_test([:attack], true, false, false, false, false)
     end
 
     def test_stunned_actions
-        a = {:use_force => true, :force => :slash}
+        a = {:use_force => true, :force => :thrust}
+        p1 = Person.new("James", {:attack_type => a, :stun_action => :attack})
+        p1.take_damage(:head, 5, 1)
+        assert_equal true, p1.stunned
+        p1.get_actions([p1])
+        assert_equal [:stun, :attack], p1.actions
+        assert_equal :thrust, p1.attack_type
+        assert_equal false, p1.stunned
+
+        a = {:use_force => true, :force => :lunge}
         p1 = Person.new("James", {:attack_type => a, :stun_action => :attack})
         p1.take_damage(:head, 5, 1)
         assert_equal true, p1.stunned
         p1.get_actions([p1])
         assert_equal [:stun, :attack], p1.actions
         assert_equal false, p1.stunned
+        assert_equal :slash, p1.attack_type
     end
 
     def test_guess_attack
@@ -466,6 +530,25 @@ class TestPerson < Test::Unit::TestCase
         a = {:use_force => true, :force => :tail}
         p1 = Person.new("James", {:counter_attack_type => a})
         assert_equal :tail, p1.counter_attack_type(p1)
+
+        a = {:use_force => false, :force => :john, :choices => {:slash => 50, :thrust => 50}}
+        p1 = Person.new("James", {:attack_guess => {:right => true}, :counter_attack_type => a})
+        $mock_die = [ 5 ]
+        assert_equal :slash, p1.counter_attack_type(p1)
+        $mock_die = nil
+        $mock_die = [ 55 ]
+        assert_equal :thrust, p1.counter_attack_type(p1)
+        $mock_die = nil
+
+        a = {:use_force => false, :force => :john}
+        p1 = Person.new("James", {:attack_guess => {:right => true}, :counter_attack_type => a})
+        assert_equal :fred, p1.counter_attack_type(p1)
+
+        a = {:use_force => false, :force => :john, :choices => {:slash => 50, :thrust => 50}}
+        p1 = Person.new("James", {:attack_guess => {:right => true}, :counter_attack_type => a})
+        $mock_die = [ 1000 ]
+        assert_equal :fred, p1.counter_attack_type(p1)
+        $mock_die = nil
     end
 
 end
