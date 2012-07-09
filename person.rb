@@ -129,6 +129,7 @@ class Person
 
         @actions = [] unless active?
         @actions = [] if @stunned
+        d
     end
 
     def guess_attack(opponent)

@@ -139,7 +139,7 @@ class ComSim
             header += "," if header != ""
             header += "Player2 " + s2keys.join(",Player2 ")
         end
-        header += ",W1,W2,Wcount,LR,AR,SR,D,U,R"
+        header += ",W1,W2,Wcount,LR,AR,SR,D,U,R,divider,FBW,W0,W1,W2,W3+,L1,L2,L3+,divider"
         puts header
         s1people.each do |s1v|
             s1line = ""
@@ -187,6 +187,9 @@ class ComSim
         round_long = 0
         round_total = 0
         death_count = knock_out_count = resigned_count = 0
+        win_hit0 = win_hit1 = win_hit2 = win_hit3 = 0
+        lose_hit1 = lose_hit2 = lose_hit3 = 0
+        first_blood_win = 0
         p1win = p2win = 0
         count = $iter_count
         histo = Array.new(250, 0)
@@ -199,6 +202,17 @@ class ComSim
             round_total += r
             p1win += 1 if p1.active?
             p2win += 1 if p2.active?
+            winningLetter = p1.active? ? "A" : "B"
+            winningSide = p1.active? ? :sideA_hit_count : :sideB_hit_count
+            losingSide = p2.active? ? :sideA_hit_count : :sideB_hit_count
+            first_blood_win += 1 if winningLetter == f.stats[:first_blood]
+            win_hit0 += 1 if f.stats[winningSide] == 0
+            win_hit1 += 1 if f.stats[winningSide] == 1
+            win_hit2 += 1 if f.stats[winningSide] == 2
+            win_hit3 += 1 if f.stats[winningSide] > 2
+            lose_hit1 += 1 if f.stats[losingSide] == 1
+            lose_hit2 += 1 if f.stats[losingSide] == 2
+            lose_hit3 += 1 if f.stats[losingSide] > 2
             death_count += 1 if p1.died or p2.died
             knock_out_count += 1 if p1.knocked_out or p2.knocked_out
             resigned_count += 1 if p1.resigned or p2.resigned
@@ -210,7 +224,7 @@ class ComSim
             index = tttcount if x != 0
             tttcount += 1
         end
-        [p1win, p2win, count, round_long, round_total.to_f/count.to_f, round_small, death_count, knock_out_count, resigned_count, histo[0..index] ]
+        [p1win, p2win, count, round_long, round_total.to_f/count.to_f, round_small, death_count, knock_out_count, resigned_count, "!", first_blood_win.to_f/count.to_f, win_hit0, win_hit1, win_hit2, win_hit3, lose_hit1, lose_hit2, lose_hit3, "!", histo[0..index] ]
     end
 
 end

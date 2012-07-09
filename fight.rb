@@ -7,6 +7,7 @@ require 'global'
 class Fight
     attr_accessor :sideA
     attr_accessor :sideB
+    attr_accessor :stats
 
     def initialize(side1, side2, ctx = nil)
         @context = ctx || {}
@@ -27,6 +28,7 @@ class Fight
         @sideA.each { |x| x.side = "A" }
         @sideB = side2
         @sideB.each { |x| x.side = "B" }
+        @stats = {:sideA_hit_count => 0, :sideB_hit_count => 0}
     end
 
     def self.side_active?(side)
@@ -141,7 +143,12 @@ class Fight
             loc = Utils.determine_location(location)
             puts "  #{attacker.name} targets the #{location}" if $print_flow
             puts "  #{attacker.name} #{action} #{defender.name} to the #{loc}" if $print_flow
-            defender.take_damage(loc, dam, @context[:scratch])
+            d = defender.take_damage(loc, dam, @context[:scratch])
+            if d > 0
+                @stats[:first_blood] = attacker.side unless @stats[:first_blood]
+                hurt_side = defender.side == "A" ? :sideA_hit_count : :sideB_hit_count
+                @stats[hurt_side] += 1
+            end
         end
 
         # If missed and defender has counter, start the counters!!
@@ -151,6 +158,8 @@ class Fight
     end
 
     def run
+        # Reset stats
+        @stats = {:sideA_hit_count => 0, :sideB_hit_count => 0}
         round = 0
 
         while Fight.side_active?(@sideA) and Fight.side_active?(@sideB)
