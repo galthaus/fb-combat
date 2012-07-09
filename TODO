@@ -1,6 +1,7 @@
 
 TODO:
 Add random choice for actions
+Normalize the stupid use of actions, default_actions, attack_type and default_attack_type
 Add more tests for fight.rb
 iterable contexts
 Weapon Break

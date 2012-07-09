@@ -80,7 +80,7 @@ compare = {
     :high_quality_weapon => [ true ], # true or false if weapons are HQ
     :offhand_weapon => [:main_gauche], # :main_gauche, :good_stuff, :OK_stuff in a list
     :style => [ :french ], # styles are: :italian, :french, :spanish
-    :attack_type => [ attack_type ], # Defined above as a variable
+    :default_attack_type => [ attack_type ], # Defined above as a variable
     :counter_attack_type => [ counter_type ], # Defined above as a variable
     :attack_guess => [ attack_guess ]  # This is defined above as a variable
 }
